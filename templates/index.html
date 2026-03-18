@@ -1,0 +1,1407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pulse — The Mindful Money Hub</title>
+    <link rel="preconnect" href="https://api.fontshare.com" crossorigin>
+    <link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700,900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+</head>
+<body>
+
+<!-- ── SIDEBAR ── -->
+<aside class="sidebar" id="sidebar">
+    <div class="sidebar-top">
+        <div class="sidebar-logo-container">
+            <svg class="pulse-logo-svg" width="34" height="34" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                <defs><linearGradient id="pulseGradient" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#38bdf8"/><stop offset="100%" stop-color="#818cf8"/></linearGradient></defs>
+                <g transform="translate(10, 30)"><path class="pulse-line" d="M 10 80 L 50 80 L 75 30 L 105 130 L 140 40 L 165 15" fill="none" stroke="url(#pulseGradient)" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/><polygon class="pulse-arrow" points="175,-5 140,5 170,35" fill="#818cf8"/></g>
+            </svg>
+            <div class="sidebar-logo">Pulse</div>
+            <button class="sidebar-toggle" id="sidebar-toggle" onclick="toggleSidebar()" aria-label="Toggle sidebar">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+            </button>
+        </div>
+        <div class="sidebar-subtitle">Mindful Money Hub</div>
+        <hr class="sidebar-divider">
+        <ul class="nav-list">
+            <li class="nav-item active" data-page="dashboard">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                <span class="nav-label">Dashboard</span>
+            </li>
+            <li class="nav-item" data-page="auditor">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                <span class="nav-label">Statement Auditor</span>
+            </li>
+            <li class="nav-item" data-page="impulse">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                <span class="nav-label">Urge Intercept</span>
+            </li>
+            <li class="nav-item" data-page="goals">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+                <span class="nav-label">Your Goals</span>
+            </li>
+        </ul>
+        <button class="btn btn-primary btn-full sidebar-quick-action" onclick="goToImpulse()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg><span class="nav-label">Impulse check</span></button>
+    </div>
+    <div class="sidebar-bottom">
+        <hr class="sidebar-divider">
+        <div class="sidebar-accounts" id="sidebar-accounts"><p class="sidebar-section-label"><span class="nav-label">No accounts linked</span></p></div>
+        <hr class="sidebar-divider">
+        <div class="sidebar-footer">
+            <a href="#" class="sidebar-footer-link"><span class="nav-label">Help & Support</span></a>
+            <a href="#" class="sidebar-footer-link"><span class="nav-label">Settings</span></a>
+            <span class="sidebar-version"><span class="nav-label">v1.0.0 Beta</span></span>
+        </div>
+    </div>
+</aside>
+
+<!-- ── TOP BAR ── -->
+<header class="topbar">
+    <div class="topbar-left"><span class="breadcrumb" id="breadcrumb">Dashboard</span></div>
+    <div class="topbar-center">
+        <div class="search-bar" onclick="this.querySelector('input').focus()">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" placeholder="Search transactions..." id="global-search">
+            <kbd class="search-kbd">&#8984;K</kbd>
+        </div>
+    </div>
+    <div class="topbar-right">
+        <div class="topbar-notification" onclick="toggleNotifications()">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+            <span class="notification-dot"></span>
+        </div>
+        <div class="topbar-avatar">JM</div>
+    </div>
+</header>
+
+<!-- ── MAIN ── -->
+<div class="main">
+
+    <!-- ═══ PAGE: DASHBOARD ═══ -->
+    <div class="page active" id="page-dashboard">
+        <div class="page-header-row">
+            <div><h1 class="page-title">Dashboard</h1><p class="page-subtitle">Your financial overview</p></div>
+            <div class="page-header-right"><span class="last-updated" id="last-updated"></span></div>
+        </div>
+
+        <div id="dashboard-disconnected">
+            <div class="card connect-cta">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#bbb" stroke-width="1.5"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+                <h3>Connect your bank accounts</h3>
+                <p>Link CaixaBank and Revolut to enable AI-powered spending analysis</p>
+                <button class="btn btn-primary" onclick="connectAccounts()">Connect CaixaBank & Revolut</button>
+            </div>
+        </div>
+
+        <div id="dashboard-connected" class="hidden">
+            <div class="status-pill">Connected</div>
+            <div class="metric-grid-4">
+                <div class="metric-card"><div class="metric-label">CaixaBank</div><div class="metric-value" data-countup="2450.00">€0.00</div><div class="metric-delta delta-down">▼ €45.00</div></div>
+                <div class="metric-card"><div class="metric-label">Revolut</div><div class="metric-value" data-countup="340.50">€0.00</div><div class="metric-delta delta-up">▲ €12.00</div></div>
+                <div class="metric-card"><div class="metric-label">Total Liquidity</div><div class="metric-value" data-countup="2790.50">€0.00</div><div class="metric-delta delta-neutral">Normal</div></div>
+                <div class="metric-card pulse-score-card" id="pulse-score-card">
+                    <div class="metric-label">Mindfulness Score</div>
+                    <div class="pulse-score-ring">
+                        <svg width="52" height="52" viewBox="0 0 52 52">
+                            <circle class="pulse-score-track" cx="26" cy="26" r="22"/>
+                            <circle class="pulse-score-fill" id="pulse-score-circle" cx="26" cy="26" r="22" stroke-dasharray="138.23" stroke-dashoffset="20.73"/>
+                        </svg>
+                        <div class="pulse-score-value" id="pulse-score-value">85</div>
+                    </div>
+                    <span class="pulse-score-delta neutral" id="pulse-score-delta">Baseline</span>
+                </div>
+            </div>
+            <div style="display:grid;grid-template-columns:2fr 1fr;gap:14px;margin-bottom:1rem;">
+                <div class="chart-container"><canvas id="dashboard-chart" height="100"></canvas></div>
+                <div class="chart-container" style="display:flex;align-items:center;justify-content:center;"><canvas id="dashboard-donut" height="100"></canvas></div>
+            </div>
+
+            <!-- Pulse Insights (replaces old banner) -->
+            <div id="dashboard-insights" class="hidden">
+                <p class="section-label">Pulse Insights</p>
+                <div class="insight-grid" id="insight-cards"></div>
+            </div>
+
+            <!-- Opportunity Cost Mirror -->
+            <div id="opportunity-cost-mirror" class="card-accent hidden" style="margin-top:1.5rem;">
+                <p class="section-label">Opportunity Cost Mirror</p>
+                <p class="ocm-headline" id="ocm-headline">What if you diverted some discretionary spending to investments?</p>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:1rem;">
+                    <div>
+                        <div class="impulse-input-box" style="margin-bottom:0.75rem;">
+                            <label>Monthly amount (€)</label>
+                            <input type="number" id="invest-amount" value="150" min="1" max="100000" step="10" oninput="liveProjection()">
+                        </div>
+                        <div class="slider-group">
+                            <label>Horizon: <strong id="years-display">10</strong> years</label>
+                            <input type="range" id="invest-years" min="1" max="30" value="10" oninput="document.getElementById('years-display').textContent=this.value;liveProjection()">
+                        </div>
+                        <div style="margin-bottom:0.75rem;">
+                            <label style="display:block;font-size:0.82rem;font-weight:500;margin-bottom:6px;color:var(--text-secondary);">Risk profile</label>
+                            <div class="risk-pills">
+                                <div class="risk-pill" data-risk="Conservative (4%)" onclick="selectRisk(this)">Conservative<span class="risk-sub">Bonds / Cash</span></div>
+                                <div class="risk-pill active" data-risk="Balanced (7%)" onclick="selectRisk(this)">Balanced<span class="risk-sub">Index Funds</span></div>
+                                <div class="risk-pill" data-risk="Aggressive (12%)" onclick="selectRisk(this)">Aggressive<span class="risk-sub">Equities</span></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="advisor-note" id="advisor-note">
+                            <div class="advisor-label">Projection</div>
+                            <div class="advisor-body" id="eli5-text">Adjust the controls and see real-time projections.</div>
+                        </div>
+                        <div class="metric-grid" id="projection-metrics" style="margin-top:0.75rem;"></div>
+                    </div>
+                </div>
+                <div class="chart-container" style="margin-top:0.5rem;"><canvas id="projection-chart" height="100"></canvas></div>
+                <p class="disclaimer">Simplified projection. Not financial advice.</p>
+            </div>
+
+            <button class="btn btn-secondary" style="margin-top: 1rem;" onclick="disconnectAccounts()">Disconnect Accounts</button>
+        </div>
+
+        <div id="dashboard-skeleton" class="hidden">
+            <div class="metric-grid">
+                <div class="metric-card"><div class="skeleton skeleton-label"></div><div class="skeleton skeleton-value"></div><div class="skeleton skeleton-delta"></div></div>
+                <div class="metric-card"><div class="skeleton skeleton-label"></div><div class="skeleton skeleton-value"></div><div class="skeleton skeleton-delta"></div></div>
+                <div class="metric-card"><div class="skeleton skeleton-label"></div><div class="skeleton skeleton-value"></div><div class="skeleton skeleton-delta"></div></div>
+            </div>
+            <div class="card"><div class="skeleton skeleton-chart"></div></div>
+        </div>
+    </div>
+
+    <!-- ═══ PAGE: STATEMENT AUDITOR ═══ -->
+    <div class="page" id="page-auditor">
+        <div class="page-header-row">
+            <div><h1 class="page-title">AI Statement Auditor</h1><p class="page-subtitle">Analyse your spending habits with the help of your AI analyst</p></div>
+            <div class="page-header-right" id="auditor-controls" style="display:none;">
+                <select class="date-range-pill" id="date-range" onchange="filterByDate()">
+                    <option value="all">All time</option><option value="7">Last 7 days</option><option value="14">Last 14 days</option><option value="30" selected>Last 30 days</option><option value="60">Last 60 days</option>
+                </select>
+                <button class="btn btn-secondary btn-sm" onclick="exportCSV()">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    Export
+                </button>
+            </div>
+        </div>
+        <div id="auditor-upload">
+            <div class="upload-area" onclick="document.getElementById('csv-upload').click()">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#bbb" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                <p id="upload-primary-text">Drop your CSV here, or <strong>click to browse</strong></p>
+                <p style="font-size:0.75rem;color:var(--text-muted);margin-top:4px;" id="upload-hint-text">Supports .csv up to 10MB</p>
+                <input type="file" id="csv-upload" accept=".csv" onchange="uploadCSV(this)">
+            </div>
+            <p id="upload-connect-hint" class="hidden" style="text-align:center;margin-top:0.75rem;font-size:0.82rem;color:var(--text-secondary);">Or <a href="#" onclick="event.preventDefault();goToDashboard()" style="color:var(--accent);font-weight:600;text-decoration:none;">connect your bank accounts</a> on the Dashboard for automatic import.</p>
+            <button class="btn btn-secondary btn-full" onclick="loadDemo()" style="margin-top:0.75rem;">Use Demo Data</button>
+        </div>
+        <div id="auditor-skeleton" class="hidden">
+            <div class="card"><div class="skeleton skeleton-label" style="width:40%"></div><div class="skeleton skeleton-chart" style="height:60px;margin-top:10px"></div></div>
+            <div class="card-accent"><div class="skeleton skeleton-label" style="width:30%"></div><div class="skeleton skeleton-value" style="width:50%;margin:10px 0"></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px"><div class="skeleton" style="height:50px;border-radius:8px"></div><div class="skeleton" style="height:50px;border-radius:8px"></div></div></div>
+        </div>
+        <div id="auditor-loaded" class="hidden">
+            <div class="auditor-split">
+                <!-- LEFT PANE: Chat -->
+                <div class="auditor-chat-pane">
+                    <div class="chat-container auditor-chat-container">
+                        <div class="chat-messages" id="chat-messages"></div>
+                        <div class="chat-suggested-prompts" id="suggested-prompts">
+                            <button class="prompt-pill" onclick="firePrompt(this)">Find my biggest impulse leak</button>
+                            <button class="prompt-pill" onclick="firePrompt(this)">Summarize my subscriptions</button>
+                            <button class="prompt-pill" onclick="firePrompt(this)">Why is my Food Delivery so high?</button>
+                        </div>
+                        <div class="chat-input-row">
+                            <input type="text" class="chat-input" id="chat-input" placeholder="Ask about your spending..." onkeydown="if(event.key==='Enter')sendChat()">
+                            <button class="btn btn-primary chat-send" onclick="sendChat()">Send</button>
+                        </div>
+                    </div>
+                </div>
+                <!-- RIGHT PANE: Context Board -->
+                <div class="auditor-context-pane">
+                    <div id="context-chart-area"></div>
+                    <div id="personality-card" class="card-accent hidden">
+                        <p class="section-label">Spending Personality</p>
+                        <div class="persona-archetype" id="persona-archetype"></div>
+                        <div class="persona-desc" id="persona-desc"></div>
+                        <div class="trait-grid"><div class="trait-box t-strength" id="persona-strength"></div><div class="trait-box t-blind" id="persona-blind"></div></div>
+                        <div class="t-tip" id="persona-tip"></div>
+                    </div>
+                    <details class="card" style="cursor:pointer"><summary style="font-weight:700;font-size:0.85rem">Transaction History</summary><div id="data-preview" style="margin-top:0.75rem;overflow-x:auto"></div></details>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══ PAGE: URGE INTERCEPT ═══ -->
+    <div class="page" id="page-impulse">
+        <div class="page-header-row">
+            <div><h1 class="page-title">Urge Intercept</h1><p class="page-subtitle">Before you buy, let's see what it really costs you</p></div>
+            <div class="page-header-right"><div class="pulse-score-mini" id="pulse-score-mini-impulse"><div class="pulse-score-ring-mini"><svg width="36" height="36" viewBox="0 0 52 52"><circle class="pulse-score-track" cx="26" cy="26" r="22"/><circle class="pulse-score-fill pulse-score-fill-mini" cx="26" cy="26" r="22" stroke-dasharray="138.23" stroke-dashoffset="20.73"/></svg><div class="pulse-score-value-mini">85</div></div><span class="pulse-score-label-mini">Mindfulness</span></div></div>
+        </div>
+        <div id="impulse-cross-module" class="alert alert-info hidden"></div>
+
+        <!-- Empty state: shown when no income detected -->
+        <div id="impulse-empty" class="hidden">
+            <div class="impulse-empty-state">
+                <div class="impulse-empty-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                </div>
+                <div class="impulse-empty-title">To calculate the true cost of your impulses, we need your baseline.</div>
+                <div class="impulse-empty-desc">Connect your bank accounts so we can detect your income automatically, or enter it manually below.</div>
+                <div class="impulse-empty-actions">
+                    <button class="btn btn-primary" onclick="emptyStateGoToDashboard()">Connect Accounts</button>
+                    <button class="btn btn-secondary" onclick="emptyStateEnterManually()">Enter Manually</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Calculator: shown when income is available -->
+        <div id="impulse-calculator">
+        <div class="card" style="padding: 2rem;">
+            <label style="display:block;font-size:1rem;font-weight:700;margin-bottom:0.75rem;color:var(--text);">What are you tempted to buy right now?</label>
+            <input type="text" class="impulse-big-input" id="impulse-text" placeholder='e.g. A €150 jacket at Zara' onkeydown="if(event.key==='Enter')analyseImpulse()">
+            <div class="impulse-income-row" id="income-display">
+                <span class="income-detected">Time-cost based on estimated income of <strong>€2,400/month</strong></span>
+                <button class="btn btn-secondary btn-sm" onclick="document.getElementById('income-edit').classList.toggle('hidden')">Edit</button>
+            </div>
+            <div id="income-edit" class="hidden" style="margin-top:0.75rem;">
+                <label style="font-size:0.82rem;font-weight:500;color:var(--text-secondary);">Net monthly income (€)</label>
+                <input type="number" id="monthly-income" value="2400" min="500" max="50000" step="100" style="width:200px;margin-top:4px;" class="impulse-income-input" onchange="updateIncomeDisplay()">
+            </div>
+            <button class="btn btn-primary" style="margin-top:1.25rem;" onclick="analyseImpulse()">Analyse this purchase</button>
+        </div>
+
+        <div id="impulse-result" class="hidden" style="margin-top:1.5rem;">
+            <h3 id="impulse-title" style="font-size:1.05rem;font-weight:700;margin-bottom:0.5rem;"></h3>
+            <div class="rc-grid">
+                <div class="rc-item rc-price"><div class="rc-val" id="rc-price"></div><div class="rc-lab">Purchase Price</div></div>
+                <div class="rc-item rc-hours"><div class="rc-val" id="rc-hours"></div><div class="rc-lab">Working Hours</div></div>
+                <div class="rc-item rc-days"><div class="rc-val" id="rc-days"></div><div class="rc-lab">Working Days</div></div>
+            </div>
+            <div class="alert alert-warning" id="time-warning"></div>
+            <div id="pattern-alert"></div>
+            <div class="btn-row">
+                <button class="btn btn-freeze" onclick="showGoalPicker()">Lock for 48hrs — choose a goal</button>
+                <button class="btn btn-buy" onclick="buyAnyway()">Buy Anyway</button>
+            </div>
+            <div id="goal-picker" class="hidden" style="margin-top:1rem;">
+                <p class="section-label">Allocate to a goal</p>
+                <p style="font-size:0.82rem;color:var(--text-secondary);margin-bottom:0.75rem;">If the urge passes in 48 hours, this money moves toward your goal. If not, it unlocks.</p>
+                <div id="goal-picker-cards"></div>
+            </div>
+            <div id="freeze-confirmation" class="hidden"></div>
+        </div>
+        </div><!-- end impulse-calculator -->
+
+        <!-- ── Impulse Ledger / Validation Queue ── -->
+        <div class="impulse-ledger" style="margin-top:2rem;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
+                <p class="section-label" style="margin-bottom:0;">Validation Queue</p>
+                <span class="ledger-queue-hint" style="font-size:0.72rem;color:var(--text-muted);font-weight:500;">AI-flagged purchases awaiting your review</span>
+            </div>
+            <div id="ledger-wins-items"></div>
+            <div class="ledger-summary win-summary" id="ledger-wins-summary" style="display:none;">
+                <span>Total intercepted</span><strong id="ledger-wins-total">€0.00 saved</strong>
+            </div>
+            <div id="ledger-wins-empty" class="card" style="text-align:center;padding:1.5rem;color:var(--text-muted);font-size:0.85rem;">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:8px;"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                <p>No flagged purchases yet. Load your statement to let the AI scan for impulse patterns.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══ PAGE: YOUR GOALS ═══ -->
+    <div class="page" id="page-goals">
+        <div class="page-header-row">
+            <div><h1 class="page-title">Your Goals</h1><p class="page-subtitle">Turn frozen impulses into tangible progress</p></div>
+            <div class="page-header-right"><div class="pulse-score-mini" id="pulse-score-mini-goals"><div class="pulse-score-ring-mini"><svg width="36" height="36" viewBox="0 0 52 52"><circle class="pulse-score-track" cx="26" cy="26" r="22"/><circle class="pulse-score-fill pulse-score-fill-mini" cx="26" cy="26" r="22" stroke-dasharray="138.23" stroke-dashoffset="20.73"/></svg><div class="pulse-score-value-mini">85</div></div><span class="pulse-score-label-mini">Mindfulness</span></div></div>
+        </div>
+
+        <!-- Goal cards -->
+        <div id="goals-grid" class="goals-grid"></div>
+
+        <!-- Vault section -->
+        <div style="margin-top:2rem;">
+            <p class="section-label">48-Hour Vault</p>
+            <p style="font-size:0.82rem;color:var(--text-secondary);margin-bottom:1rem;">Frozen impulse purchases sit here for 48 hours. If the urge passes, the money moves to your goal. If not, it unlocks.</p>
+            <div id="vault-items"></div>
+            <div id="vault-empty" class="card" style="text-align:center;padding:2.5rem;">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#CCCCCC" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:0.75rem;"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                <p style="font-weight:600;color:var(--text-secondary);margin-bottom:4px;">Vault is empty</p>
+                <p style="color:var(--text-muted);font-size:0.82rem;">Go to <strong>Impulse Purchase?</strong> and freeze something to start building toward your goals.</p>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- Notification dropdown -->
+<div class="notification-panel hidden" id="notification-panel">
+    <div class="notification-header">Notifications</div>
+    <div class="notification-item unread">New statement analysis available</div>
+    <div class="notification-item unread">Unusual spending detected in Clothing</div>
+    <div class="notification-item">Your monthly summary is ready</div>
+    <div class="notification-item">Account linked successfully</div>
+</div>
+
+<script>
+// ── STATE ──
+let currentImpulse = null;
+let projectionChart = null;
+let allTransactions = [];
+let detectedIncome = 2400;
+let eli5Debounce = null;
+let accountsConnected = false;
+let auditorDataReady = false; // true once showAuditorData has been called
+
+// ── SIDEBAR TOGGLE ──
+function toggleSidebar(){
+    const sb = document.getElementById('sidebar');
+    sb.classList.toggle('collapsed');
+    const icon = document.querySelector('#sidebar-toggle svg polyline');
+    if(sb.classList.contains('collapsed')){
+        icon.setAttribute('points','9 18 15 12 9 6');
+    } else {
+        icon.setAttribute('points','15 18 9 12 15 6');
+    }
+}
+
+// ── LEDGER TAB SWITCHER ──
+function switchLedgerTab(tab, btnEl){
+    document.querySelectorAll('.ledger-tab').forEach(b=>b.classList.remove('active'));
+    btnEl.classList.add('active');
+    document.getElementById('ledger-wins').classList.toggle('hidden', tab!=='wins');
+    document.getElementById('ledger-leaks').classList.toggle('hidden', tab!=='leaks');
+}
+
+// ── CHART.JS GLOBAL FONT ──
+Chart.defaults.font.family = "'Satoshi', -apple-system, BlinkMacSystemFont, sans-serif";
+
+// ── TIMESTAMP ──
+function updateTimestamp() {
+    const now = new Date();
+    const el = document.getElementById('last-updated');
+    if (el) el.textContent = 'Data as of ' + now.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}) + ', ' + now.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+}
+updateTimestamp();
+
+// ── NAVIGATION ──
+const breadcrumbMap = {dashboard:'Dashboard',auditor:'Statement Auditor',impulse:'Urge Intercept',goals:'Your Goals'};
+
+document.querySelectorAll('.nav-item').forEach(item => {
+    item.addEventListener('click', () => {
+        document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+        item.classList.add('active');
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.getElementById('page-'+item.dataset.page).classList.add('active');
+        document.getElementById('breadcrumb').textContent = breadcrumbMap[item.dataset.page]||'';
+        if (item.dataset.page==='impulse') loadImpulseState();
+        if (item.dataset.page==='goals') loadGoalsPage();
+        if (item.dataset.page==='auditor') checkAuditorState();
+    });
+});
+
+function goToImpulse() {
+    document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+    document.querySelector('[data-page="impulse"]').classList.add('active');
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById('page-impulse').classList.add('active');
+    document.getElementById('breadcrumb').textContent='Impulse Purchase?';
+    loadImpulseState();
+    document.getElementById('impulse-text').focus();
+}
+
+// ── NOTIFICATIONS ──
+function toggleNotifications(){document.getElementById('notification-panel').classList.toggle('hidden');}
+document.addEventListener('click',e=>{if(!e.target.closest('.topbar-notification')&&!e.target.closest('.notification-panel'))document.getElementById('notification-panel').classList.add('hidden');});
+
+// ── COUNT-UP ──
+function countUp(el,target,duration=1000){
+    const startTime=performance.now();
+    function update(t){
+        const p=Math.min((t-startTime)/duration,1);
+        const eased=1-Math.pow(1-p,3);
+        el.textContent='€'+((target*eased).toLocaleString('en',{minimumFractionDigits:2,maximumFractionDigits:2}));
+        if(p<1)requestAnimationFrame(update);
+    }
+    requestAnimationFrame(update);
+}
+function animateMetrics(){document.querySelectorAll('[data-countup]').forEach(el=>countUp(el,parseFloat(el.dataset.countup)));}
+
+// ── DASHBOARD CHARTS ──
+let dashChart=null;
+let dashDonut=null;
+function renderDashChart(){
+    if(dashChart)dashChart.destroy();
+    const labels=Array.from({length:30},(_,i)=>{const d=new Date();d.setDate(d.getDate()-29+i);return d.toLocaleDateString('en-GB',{day:'numeric',month:'short'});});
+    const data=[2820,2795,2780,2810,2750,2730,2690,2710,2680,2720,2700,2740,2690,2670,2710,2680,2650,2700,2730,2690,2710,2750,2720,2780,2760,2800,2770,2810,2790,2790];
+    dashChart=new Chart(document.getElementById('dashboard-chart'),{
+        type:'line',data:{labels,datasets:[{label:'Balance',data,borderColor:'#0052FF',borderWidth:2,pointRadius:0,tension:0.4,fill:{target:'origin',above:'rgba(0,82,255,0.04)'}}]},
+        options:{plugins:{legend:{display:false}},scales:{y:{ticks:{callback:v=>'€'+v.toLocaleString(),font:{size:10}},grid:{color:'#F0F0F0'},min:2600},x:{grid:{display:false},ticks:{maxTicksLimit:6,font:{size:10}}}},interaction:{mode:'index',intersect:false}}
+    });
+    // Donut: discretionary vs essentials
+    if(dashDonut)dashDonut.destroy();
+    dashDonut=new Chart(document.getElementById('dashboard-donut'),{
+        type:'doughnut',
+        data:{labels:['Discretionary','Rent & Bills'],datasets:[{data:[1150,1060],backgroundColor:['#0052FF','#E5E5E7'],borderWidth:0,hoverOffset:4}]},
+        options:{cutout:'70%',plugins:{legend:{position:'bottom',labels:{usePointStyle:true,font:{family:'Satoshi',size:10},padding:8}}},responsive:true,maintainAspectRatio:true}
+    });
+}
+
+// ── SCROLL SHADOW ──
+window.addEventListener('scroll',()=>document.querySelector('.topbar').classList.toggle('topbar-scrolled',window.scrollY>0));
+
+// ── ACCOUNTS ──
+function connectAccounts(){
+    const btn=event.target;btn.textContent='Connecting...';btn.disabled=true;
+    document.getElementById('dashboard-disconnected').classList.add('hidden');
+    document.getElementById('dashboard-skeleton').classList.remove('hidden');
+
+    // Silently load demo data while showing the connecting spinner
+    const dataPromise = fetch('/api/load-demo',{method:'POST'}).then(r=>r.json()).catch(()=>null);
+
+    setTimeout(async()=>{
+        document.getElementById('dashboard-skeleton').classList.add('hidden');
+        document.getElementById('dashboard-connected').classList.remove('hidden');
+        document.getElementById('sidebar-accounts').innerHTML=`<p class="sidebar-section-label">Linked Accounts</p><div class="sidebar-account-row">CaixaBank <span>€2,450</span></div><div class="sidebar-account-row">Revolut <span>€340.50</span></div><p class="sidebar-total">Total: €2,790.50</p>`;
+        accountsConnected = true;
+        updateTimestamp();animateMetrics();renderDashChart();
+
+        // Process the demo data that was loading in parallel
+        const data = await dataPromise;
+        if(data && data.success){
+            allTransactions = data.transactions;
+            showAuditorData(data);
+            // Hide the upload screen preemptively
+            document.getElementById('auditor-upload').classList.add('hidden');
+        }
+    },2000);
+}
+function disconnectAccounts(){
+    document.getElementById('dashboard-disconnected').classList.remove('hidden');
+    document.getElementById('dashboard-connected').classList.add('hidden');
+    document.getElementById('dashboard-insights').classList.add('hidden');
+    document.getElementById('sidebar-accounts').innerHTML='<p class="sidebar-section-label">No accounts linked</p>';
+    accountsConnected = false;
+    auditorDataReady = false;
+    allTransactions = [];
+    // Reset auditor to upload state
+    document.getElementById('auditor-loaded').classList.add('hidden');
+    document.getElementById('auditor-controls').style.display='none';
+    document.getElementById('auditor-upload').classList.remove('hidden');
+    updateAuditorUploadText();
+    // Clear chat messages
+    document.getElementById('chat-messages').innerHTML='';
+    // Clear context chart area
+    document.getElementById('context-chart-area').innerHTML='';
+    // Reset connect button
+    const btn=document.querySelector('#dashboard-disconnected .btn-primary');
+    if(btn){btn.textContent='Connect CaixaBank & Revolut';btn.disabled=false;}
+}
+
+// ── LOAD DEMO ──
+async function loadDemo(){
+    const btn=event.target;btn.innerHTML='<span class="loading"></span> Loading...';btn.disabled=true;
+    document.getElementById('auditor-upload').classList.add('hidden');
+    document.getElementById('auditor-skeleton').classList.remove('hidden');
+    try{
+        const data=await(await fetch('/api/load-demo',{method:'POST'})).json();
+        document.getElementById('auditor-skeleton').classList.add('hidden');
+        if(data.success){allTransactions=data.transactions;showAuditorData(data);}
+    }catch(e){document.getElementById('auditor-skeleton').classList.add('hidden');document.getElementById('auditor-upload').classList.remove('hidden');alert('Error: '+e.message);}
+    btn.textContent='Use Demo Data';btn.disabled=false;
+}
+
+// ── UPLOAD CSV ──
+async function uploadCSV(input){
+    if(!input.files.length)return;
+    const fd=new FormData();fd.append('file',input.files[0]);
+    document.getElementById('auditor-upload').classList.add('hidden');
+    document.getElementById('auditor-skeleton').classList.remove('hidden');
+    try{
+        const data=await(await fetch('/api/upload-csv',{method:'POST',body:fd})).json();
+        document.getElementById('auditor-skeleton').classList.add('hidden');
+        if(data.success){allTransactions=data.transactions;showAuditorData(data);}
+        else{document.getElementById('auditor-upload').classList.remove('hidden');alert('Error: '+data.error);}
+    }catch(e){document.getElementById('auditor-skeleton').classList.add('hidden');document.getElementById('auditor-upload').classList.remove('hidden');alert(e.message);}
+}
+
+function showAuditorData(data){
+    auditorDataReady = true;
+    document.getElementById('auditor-upload').classList.add('hidden');
+    document.getElementById('auditor-loaded').classList.remove('hidden');
+    document.getElementById('auditor-controls').style.display='flex';
+    renderTable(data.transactions);
+    if(data.personality&&data.personality.archetype){
+        const p=data.personality;
+        document.getElementById('persona-archetype').textContent=p.archetype;
+        document.getElementById('persona-desc').textContent=p.description||'';
+        document.getElementById('persona-strength').innerHTML='<strong>Strength:</strong> '+(p.strength||'');
+        document.getElementById('persona-blind').innerHTML='<strong>Blind spot:</strong> '+(p.blind_spot||'');
+        document.getElementById('persona-tip').innerHTML='<strong>Tip:</strong> '+(p.tip||'');
+        document.getElementById('personality-card').classList.remove('hidden');
+    }
+    addChatMessage('bot','Statement loaded! Ask me anything — "What was my biggest expense?", "How much on food delivery?", or "Show me a category breakdown."');
+    // Insight cards on dashboard
+    if(data.insights&&data.insights.length){
+        let html='';
+        data.insights.forEach(ins=>{
+            html+=`<div class="insight-card"><div class="insight-top"><span class="insight-cat">${ins.category}</span><span class="insight-pct">${ins.pct}%</span></div><div class="insight-amount">€${ins.amount.toFixed(2)}</div><div class="insight-detail">${ins.count} transactions this period</div><button class="btn btn-secondary btn-sm" onclick="goToAuditorSearch('${ins.category}')">Review</button></div>`;
+        });
+        document.getElementById('insight-cards').innerHTML=html;
+        document.getElementById('dashboard-insights').classList.remove('hidden');
+    }
+    // Detect income for impulse page
+    if(data.monthly_income){
+        detectedIncome=data.monthly_income;
+        document.getElementById('monthly-income').value=detectedIncome;
+        updateIncomeDisplay();
+    }
+    updateTimestamp();
+
+    // Populate Opportunity Cost Mirror on Dashboard
+    if(data.top_category && data.top_spend){
+        const half = Math.round(data.top_spend / 2);
+        document.getElementById('ocm-headline').innerHTML = `You spend <strong>€${data.top_spend.toFixed(2)}</strong> on <strong>${data.top_category}</strong>. What if you diverted half to investments?`;
+        document.getElementById('invest-amount').value = half;
+        document.getElementById('opportunity-cost-mirror').classList.remove('hidden');
+        liveProjection();
+    }
+    // Store and render LLM-flagged impulses for the validation queue
+    if(data.flagged_impulses && data.flagged_impulses.length){
+        window._flaggedImpulses = data.flagged_impulses;
+        renderValidationQueue(data.flagged_impulses);
+    }
+}
+
+function goToAuditorSearch(cat){
+    document.querySelectorAll('.nav-item').forEach(i=>i.classList.remove('active'));
+    document.querySelector('[data-page="auditor"]').classList.add('active');
+    document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+    document.getElementById('page-auditor').classList.add('active');
+    document.getElementById('breadcrumb').textContent='Statement Auditor';
+    document.getElementById('chat-input').value='Show me my '+cat+' transactions and give me a breakdown.';
+    setTimeout(()=>sendChat(),300);
+}
+
+// ── AUDITOR STATE CHECK (called on tab switch) ──
+function checkAuditorState(){
+    if(auditorDataReady){
+        // Data already loaded — make sure we're showing the loaded view
+        document.getElementById('auditor-upload').classList.add('hidden');
+        document.getElementById('auditor-loaded').classList.remove('hidden');
+        document.getElementById('auditor-controls').style.display='flex';
+    } else {
+        // No data yet — show upload screen with contextual hint
+        updateAuditorUploadText();
+    }
+}
+
+function updateAuditorUploadText(){
+    const hint = document.getElementById('upload-connect-hint');
+    if(!accountsConnected && hint){
+        hint.classList.remove('hidden');
+    } else if(hint){
+        hint.classList.add('hidden');
+    }
+}
+
+function goToDashboard(){
+    document.querySelectorAll('.nav-item').forEach(i=>i.classList.remove('active'));
+    document.querySelector('[data-page="dashboard"]').classList.add('active');
+    document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+    document.getElementById('page-dashboard').classList.add('active');
+    document.getElementById('breadcrumb').textContent='Dashboard';
+}
+
+function renderTable(txns){
+    // Sort by date descending (most recent first)
+    const sorted = [...txns].sort((a,b) => new Date(b.date) - new Date(a.date));
+    const allCats = [...new Set(allTransactions.map(t=>t.category))].sort();
+    let html='<table class="data-table"><thead><tr><th>Date</th><th>Description</th><th>Category</th><th>Amount</th></tr></thead><tbody>';
+    sorted.forEach((t,i)=>{
+        const cls=t.amount>=0?'amount-income':'amount-expense';
+        const sign=t.amount>=0?'+':'';
+        let catOptions = allCats.map(c=>`<option value="${c}"${c===t.category?' selected':''}>${c}</option>`).join('');
+        html+=`<tr><td>${t.date}</td><td>${t.description}</td><td><select class="category-select" data-desc="${t.description}" data-date="${t.date}" onchange="onCategoryChange(this)">${catOptions}</select></td><td class="amount-cell ${cls}">${sign}€${Math.abs(t.amount).toFixed(2)}</td></tr>`;
+    });
+    html+='</tbody></table>';
+    document.getElementById('data-preview').innerHTML=html;
+}
+
+function filterByDate(){
+    const days=document.getElementById('date-range').value;
+    if(days==='all'){renderTable(allTransactions);return;}
+    const dates=allTransactions.map(t=>new Date(t.date));
+    const max=new Date(Math.max(...dates));
+    const cut=new Date(max);cut.setDate(cut.getDate()-parseInt(days));
+    renderTable(allTransactions.filter(t=>new Date(t.date)>=cut));
+}
+
+function exportCSV(){
+    if(!allTransactions.length)return;
+    let csv='Date,Description,Category,Amount\n';
+    allTransactions.forEach(t=>{csv+=`${t.date},"${t.description}",${t.category},${t.amount}\n`;});
+    const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download='pulse_export.csv';a.click();
+}
+
+// ── CHAT ──
+function addChatMessage(role,text,chartData){
+    const c=document.getElementById('chat-messages');
+    const d=document.createElement('div');d.className=`chat-msg ${role}`;
+
+    let processedText = text;
+    let actionButtons = '';
+    if(role === 'bot'){
+        // Parse structured action tags: [ACTION:VAULT:amount:item] and [ACTION:GOAL:amount:goal]
+        processedText = processedText.replace(/\[ACTION:VAULT:([0-9.]+):(.+?)\]/gi, (match, amount, item)=>{
+            const amt = parseFloat(amount).toFixed(2);
+            const safeItem = item.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+            actionButtons += `<div class="chat-action-row"><button class="chat-action-btn chat-action-vault" onclick="triggerRetroVault(${amt},'${safeItem}')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>Lock €${amt} in Vault<span class="chat-action-sub">${item} · 48h cooling off</span></button></div>`;
+            return '';
+        });
+        processedText = processedText.replace(/\[ACTION:GOAL:([0-9.]+):(.+?)\]/gi, (match, amount, goal)=>{
+            const amt = parseFloat(amount).toFixed(2);
+            const safeGoal = goal.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+            actionButtons += `<div class="chat-action-row"><button class="chat-action-btn chat-action-goal" onclick="triggerGoalTransfer(${amt},'${safeGoal}')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>Move €${amt} to ${goal}</button></div>`;
+            return '';
+        });
+        // Fallback: catch older simple [ACTION: Label] tags
+        processedText = processedText.replace(/\[ACTION:\s*(.+?)\]/gi, (match, label)=>{
+            actionButtons += `<div class="chat-action-row"><button class="chat-action-btn" onclick="chatActionGeneric('${label.replace(/'/g,"\\'")}')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>${label}</button></div>`;
+            return '';
+        });
+        processedText = processedText.trim();
+    }
+
+    const botIcon = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2z"/></svg>';
+    d.innerHTML=`<div class="chat-avatar ${role}">${role==='bot'?botIcon:'You'}</div><div class="chat-bubble">${processedText}${actionButtons}</div>`;
+    c.appendChild(d);
+
+    // Route charts to context pane instead of inline in chat
+    if(chartData&&chartData.type==='breakdown'){
+        const area = document.getElementById('context-chart-area');
+        area.innerHTML = ''; // clear old chart
+        const cd=document.createElement('div');cd.className='chart-container';
+        const heading=document.createElement('p');heading.className='section-label';heading.textContent='Spending Breakdown';heading.style.marginBottom='8px';
+        cd.appendChild(heading);
+        const cv=document.createElement('canvas');cv.height=220;cd.appendChild(cv);
+        area.appendChild(cd);
+        new Chart(cv,{type:'bar',data:{labels:chartData.data.map(d=>d.category),datasets:[{data:chartData.data.map(d=>d.total_eur),backgroundColor:['#0052FF','#00A86B','#E8930C','#E5484D','#8B5CF6','#06B6D4','#EC4899','#84CC16','#F97316','#6B7280'],borderRadius:6}]},options:{indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{ticks:{callback:v=>'€'+v},grid:{display:false}},y:{grid:{display:false}}}}});
+        // Add a small note in the chat pointing to the context pane
+        const note=document.createElement('div');note.className='chat-msg bot';
+        note.innerHTML='<div class="chat-avatar bot"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2z"/></svg></div><div class="chat-bubble" style="font-size:0.78rem;color:var(--text-muted);font-style:italic;">Chart updated in the context panel →</div>';
+        c.appendChild(note);
+    }
+    c.scrollTop=c.scrollHeight;
+}
+
+// ── SUGGESTED PROMPTS ──
+function firePrompt(el){
+    document.getElementById('chat-input').value = el.textContent;
+    sendChat();
+    // Fade out pills after first use
+    const row = document.getElementById('suggested-prompts');
+    if(row) row.style.display='none';
+}
+
+// ── CHAT ACTION HANDLERS ──
+async function triggerRetroVault(amount, item){
+    const btn = event.target.closest('.chat-action-btn');
+    if(btn){btn.disabled=true;btn.style.opacity='0.5';}
+    try{
+        // Fetch goals and present a picker inside the chat
+        const goalsData = await(await fetch('/api/goals')).json();
+        let pickerHtml = `<strong>Lock €${amount.toFixed(2)} for "${item}" — which goal should it go toward?</strong><div class="chat-goal-picker">`;
+        goalsData.goals.forEach(g=>{
+            const pct = Math.min(Math.round(g.saved/g.target*100),100);
+            const safeItem = item.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+            pickerHtml += `<button class="chat-goal-pick-btn" onclick="executeVaultAllocation(${amount},'${safeItem}',${g.id},'${g.name.replace(/'/g,"\\'")}',this)"><span class="chat-goal-pick-name">${g.name}</span><span class="chat-goal-pick-detail">${pct}% · €${g.saved.toLocaleString()} of €${g.target.toLocaleString()}</span></button>`;
+        });
+        pickerHtml += '</div>';
+        addChatMessage('bot', pickerHtml);
+    }catch(e){
+        addChatMessage('bot','Something went wrong. Try again.');
+        if(btn){btn.disabled=false;btn.style.opacity='1';}
+    }
+}
+
+async function executeVaultAllocation(amount, item, goalId, goalName, btnEl){
+    // Disable all picker buttons in this group
+    const picker = btnEl.closest('.chat-goal-picker');
+    if(picker) picker.querySelectorAll('.chat-goal-pick-btn').forEach(b=>{b.disabled=true;b.style.opacity='0.4';});
+    btnEl.style.opacity='1';btnEl.style.background='var(--accent)';btnEl.style.color='#fff';
+    try{
+        const result = await(await fetch('/api/goals/allocate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({goal_id:goalId, amount, item})})).json();
+        const updatedGoal = result.goals.find(g=>g.id===goalId);
+        const pct = Math.min(Math.round(updatedGoal.saved/updatedGoal.target*100),100);
+        addChatMessage('bot',`<strong>€${amount.toFixed(2)} locked in the 48-hour vault → ${goalName}!</strong> Now at ${pct}% of your €${updatedGoal.target.toLocaleString()} target. If you still want the ${item} in 48 hours, remove it from the Goals page.`);
+        showToast(`€${amount.toFixed(2)} locked → ${goalName}`, 2500);
+        if(typeof updatePulseScore === 'function') updatePulseScore(5);
+    }catch(e){
+        addChatMessage('bot','Something went wrong with the allocation. Try again.');
+        if(picker) picker.querySelectorAll('.chat-goal-pick-btn').forEach(b=>{b.disabled=false;b.style.opacity='1';});
+    }
+}
+
+async function triggerGoalTransfer(amount, goalName){
+    const btn = event.target.closest('.chat-action-btn');
+    if(btn){btn.disabled=true;btn.style.opacity='0.5';}
+    try{
+        // Look up goal ID by name
+        const goalsData = await(await fetch('/api/goals')).json();
+        const goal = goalsData.goals.find(g => g.name.toLowerCase() === goalName.toLowerCase());
+        if(!goal){
+            addChatMessage('bot',`Couldn't find a goal called "${goalName}". Check your Goals page.`);
+            if(btn){btn.disabled=false;btn.style.opacity='1';}
+            return;
+        }
+        const result = await(await fetch('/api/goals/allocate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({goal_id:goal.id, amount, item:'Auditor transfer'})})).json();
+        const updatedGoal = result.goals.find(g=>g.id===goal.id);
+        const pct = Math.min(Math.round(updatedGoal.saved/updatedGoal.target*100),100);
+        addChatMessage('bot',`<strong>€${amount.toFixed(2)} moved to ${goal.name}!</strong> You're now at ${pct}% of your €${updatedGoal.target.toLocaleString()} target. The money is in the 48-hour vault — if you change your mind, you can remove it from the Goals page.`);
+        showToast(`€${amount.toFixed(2)} → ${goal.name}`, 2500);
+        if(typeof updatePulseScore === 'function') updatePulseScore(5);
+    }catch(e){
+        addChatMessage('bot','Something went wrong with the transfer. Try again.');
+        if(btn){btn.disabled=false;btn.style.opacity='1';}
+    }
+}
+
+function chatActionGeneric(label){
+    showToast('Action: ' + label);
+}
+
+// ── TOAST NOTIFICATION ──
+let toastTimeout = null;
+function showToast(msg, duration=2200){
+    let t = document.getElementById('pulse-toast');
+    if(!t){
+        t = document.createElement('div');
+        t.id = 'pulse-toast';
+        t.className = 'toast';
+        document.body.appendChild(t);
+    }
+    t.textContent = msg;
+    clearTimeout(toastTimeout);
+    // Force reflow for re-trigger
+    t.classList.remove('show');
+    void t.offsetWidth;
+    t.classList.add('show');
+    toastTimeout = setTimeout(()=> t.classList.remove('show'), duration);
+}
+
+// ── INLINE CATEGORY CORRECTION ──
+function onCategoryChange(selectEl){
+    const newCat = selectEl.value;
+    const desc = selectEl.dataset.desc;
+    const date = selectEl.dataset.date;
+    // Update the local allTransactions array
+    allTransactions.forEach(t=>{
+        if(t.description === desc && t.date === date){
+            t.category = newCat;
+        }
+    });
+    showToast('Recalculating...', 1500);
+}
+
+async function sendChat(){
+    const input=document.getElementById('chat-input');const msg=input.value.trim();if(!msg)return;input.value='';
+    addChatMessage('user',msg);
+    const lid='l-'+Date.now();const c=document.getElementById('chat-messages');
+    const ld=document.createElement('div');ld.id=lid;ld.className='chat-msg bot';
+    ld.innerHTML='<div class="chat-avatar bot"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2z"/></svg></div><div class="chat-bubble"><div class="typing-dots"><span></span><span></span><span></span></div></div>';
+    c.appendChild(ld);c.scrollTop=c.scrollHeight;
+    try{
+        const data=await(await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:msg})})).json();
+        document.getElementById(lid).remove();addChatMessage('bot',data.response,data.chart_data);
+    }catch(e){document.getElementById(lid).remove();addChatMessage('bot','Error: '+e.message);}
+}
+
+// ── IMPULSE PURCHASE? ──
+function updateIncomeDisplay(){
+    const income=parseFloat(document.getElementById('monthly-income').value)||2400;
+    detectedIncome=income;
+    document.querySelector('.income-detected').innerHTML=`Time-cost based on net income of <strong>€${income.toLocaleString()}/month</strong>`;
+}
+
+async function loadImpulseState(){
+    try{
+        const s=await(await fetch('/api/state')).json();
+        const el=document.getElementById('impulse-cross-module');
+        if(s.top_category){el.innerHTML=`<strong>From your statement:</strong> Your top spending category is <strong>${s.top_category}</strong> (€${s.top_spend.toFixed(2)}). Think before you add to it.`;el.classList.remove('hidden');}
+        if(s.monthly_income){detectedIncome=s.monthly_income;document.getElementById('monthly-income').value=detectedIncome;updateIncomeDisplay();}
+        // Sync pulse score from server
+        if(s.pulse_score !== undefined){
+            pulseScore = s.pulse_score;
+            updatePulseScoreUI();
+        }
+        // Render validation queue: merge LLM-flagged items with intercepted ledger entries
+        const intercepted = (s.impulse_ledger||[]).filter(e=>e.status==='intercepted');
+        if(window._flaggedImpulses && window._flaggedImpulses.length){
+            renderValidationQueue(window._flaggedImpulses);
+        } else if(intercepted.length){
+            renderImpulseLedger(s.impulse_ledger);
+        }
+    }catch(e){}
+}
+
+function renderImpulseLedger(ledger){
+    const wins = ledger.filter(e => e.status === 'intercepted');
+    const leaks = ledger.filter(e => e.status === 'succumbed');
+
+    // Render wins
+    const winsContainer = document.getElementById('ledger-wins-items');
+    const winsEmpty = document.getElementById('ledger-wins-empty');
+    const winsSummary = document.getElementById('ledger-wins-summary');
+    if(wins.length){
+        winsEmpty.style.display = 'none';
+        winsSummary.style.display = 'flex';
+        let html = '';
+        let total = 0;
+        wins.forEach(w => {
+            total += w.amount;
+            const ago = timeAgo(w.timestamp);
+            const goalLabel = w.goal ? ' · → ' + w.goal : '';
+            html += `<div class="ledger-item ledger-win"><div class="ledger-item-icon win"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div><div class="ledger-item-body"><div class="ledger-item-name">${w.item}</div><div class="ledger-item-detail">${ago}${goalLabel}</div></div><div class="ledger-item-amount win">€${w.amount.toFixed(2)}</div></div>`;
+        });
+        winsContainer.innerHTML = html;
+        document.getElementById('ledger-wins-total').textContent = '€' + total.toFixed(2) + ' saved';
+    } else {
+        winsContainer.innerHTML = '';
+        winsEmpty.style.display = 'block';
+        winsSummary.style.display = 'none';
+    }
+
+    // Render leaks
+    const leaksContainer = document.getElementById('ledger-leaks-items');
+    const leaksEmpty = document.getElementById('ledger-leaks-empty');
+    const leaksSummary = document.getElementById('ledger-leaks-summary');
+    if(leaks.length){
+        leaksEmpty.style.display = 'none';
+        leaksSummary.style.display = 'flex';
+        let html = '';
+        let total = 0;
+        leaks.forEach(l => {
+            total += l.amount;
+            const ago = timeAgo(l.timestamp);
+            html += `<div class="ledger-item ledger-leak"><div class="ledger-item-icon leak"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg></div><div class="ledger-item-body"><div class="ledger-item-name">${l.item}</div><div class="ledger-item-detail">${ago}</div></div><div class="ledger-item-amount leak">€${l.amount.toFixed(2)}</div></div>`;
+        });
+        leaksContainer.innerHTML = html;
+        document.getElementById('ledger-leaks-total').textContent = '€' + total.toFixed(2) + ' spent';
+    } else {
+        leaksContainer.innerHTML = '';
+        leaksEmpty.style.display = 'block';
+        leaksSummary.style.display = 'none';
+    }
+}
+
+function timeAgo(isoStr){
+    const diff = Date.now() - new Date(isoStr).getTime();
+    const mins = Math.floor(diff / 60000);
+    if(mins < 1) return 'Just now';
+    if(mins < 60) return mins + 'm ago';
+    const hrs = Math.floor(mins / 60);
+    if(hrs < 24) return hrs + 'h ago';
+    const days = Math.floor(hrs / 24);
+    if(days === 1) return 'Yesterday';
+    return days + ' days ago';
+}
+
+function renderValidationQueue(flagged){
+    const container = document.getElementById('ledger-wins-items');
+    const empty = document.getElementById('ledger-wins-empty');
+    const summary = document.getElementById('ledger-wins-summary');
+    if(!flagged || !flagged.length){
+        container.innerHTML = '';
+        empty.style.display = 'block';
+        summary.style.display = 'none';
+        return;
+    }
+    empty.style.display = 'none';
+    let html = '';
+    let total = 0;
+    flagged.forEach((f, i) => {
+        total += f.amount;
+        const safeDesc = (f.description||'Item').replace(/'/g,"\\'").replace(/"/g,'&quot;');
+        html += `<div class="ledger-item ledger-queue-item">
+            <div class="ledger-item-icon" style="background:var(--warning-light);color:var(--warning);"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
+            <div class="ledger-item-body">
+                <div class="ledger-item-name">${f.description}</div>
+                <div class="ledger-item-detail">${f.date} · ${f.category} · <em style="color:var(--warning)">${f.reason||'Flagged by AI'}</em></div>
+            </div>
+            <div style="display:flex;gap:6px;align-items:center;flex-shrink:0;">
+                <span class="ledger-item-amount" style="color:var(--warning);margin-right:4px;">€${f.amount.toFixed(2)}</span>
+                <button class="btn btn-primary btn-sm" onclick="retroLockFromQueue(${f.amount},'${safeDesc}',${i})">Lock €${f.amount.toFixed(2)}</button>
+                <button class="btn btn-secondary btn-sm" onclick="dismissQueueItem(${i})">Dismiss</button>
+            </div>
+        </div>`;
+    });
+    container.innerHTML = html;
+    summary.style.display = 'flex';
+    document.getElementById('ledger-wins-total').textContent = '€' + total.toFixed(2) + ' flagged';
+}
+
+async function retroLockFromQueue(amount, item, index){
+    // Trigger vault flow — show goal picker in a simple prompt
+    try{
+        const goalsData = await(await fetch('/api/goals')).json();
+        const goalNames = goalsData.goals.map(g=>g.name).join(', ');
+        const picked = prompt('Choose a goal to lock €' + amount.toFixed(2) + ' toward:\n' + goalsData.goals.map((g,i)=>(i+1)+'. '+g.name).join('\n') + '\n\nEnter the number:');
+        if(!picked) return;
+        const idx = parseInt(picked) - 1;
+        if(idx < 0 || idx >= goalsData.goals.length) return;
+        const goal = goalsData.goals[idx];
+        await fetch('/api/goals/allocate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({goal_id:goal.id, amount, item})});
+        showToast('€' + amount.toFixed(2) + ' locked → ' + goal.name, 2500);
+        if(typeof updatePulseScore === 'function') updatePulseScore(5);
+        // Remove from queue
+        if(window._flaggedImpulses){ window._flaggedImpulses.splice(index, 1); renderValidationQueue(window._flaggedImpulses); }
+    }catch(e){ showToast('Error locking item', 2000); }
+}
+
+function dismissQueueItem(index){
+    if(window._flaggedImpulses){ window._flaggedImpulses.splice(index, 1); renderValidationQueue(window._flaggedImpulses); }
+    showToast('Dismissed', 1200);
+}
+
+async function analyseImpulse(){
+    const text=document.getElementById('impulse-text').value.trim();if(!text)return;
+    const btn=event.target;btn.innerHTML='<span class="loading"></span> Analysing...';btn.disabled=true;
+    try{
+        const data=await(await fetch('/api/extract-impulse',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text})})).json();
+        currentImpulse=data;
+        if(data.amount<=0){alert("Couldn't detect a price. Include the amount.");btn.textContent='Analyse this purchase';btn.disabled=false;return;}
+        const hourly=detectedIncome/160;
+        const hours=(data.amount/hourly).toFixed(1);
+        const days=(data.amount/hourly/8).toFixed(1);
+        document.getElementById('impulse-title').textContent='Reality check: '+data.item+(data.store!=='unknown'?' at '+data.store:'');
+        document.getElementById('rc-price').textContent='€'+data.amount.toFixed(2);
+        document.getElementById('rc-hours').textContent=hours+' hrs';
+        document.getElementById('rc-days').textContent=days+' days';
+        document.getElementById('time-warning').textContent=`That ${data.item} costs you ${hours} hours of your life — that's ${days} working days.`;
+        // Pattern alert
+        const s=await(await fetch('/api/state')).json();
+        const pa=document.getElementById('pattern-alert');pa.innerHTML='';
+        if(s.top_category){
+            const kw={'food delivery':['food','delivery','glovo'],'clothing':['jacket','shoes','sneakers','dress','zara','h&m','mango','handbag','pull&bear'],'subscriptions':['netflix','spotify','subscription'],'shopping':['amazon','airpods','electronics','ikea']};
+            const ctx=(data.item+' '+data.store).toLowerCase();
+            if((kw[s.top_category.toLowerCase()]||[s.top_category.toLowerCase()]).some(k=>ctx.includes(k))){
+                pa.innerHTML=`<div class="alert alert-danger"><strong>Pattern alert:</strong> ${s.top_category} is already your #1 spending category (€${s.top_spend.toFixed(2)}). This would add to it.</div>`;
+            }
+        }
+        document.getElementById('impulse-result').classList.remove('hidden');
+        document.getElementById('freeze-confirmation').classList.add('hidden');
+    }catch(e){alert('Error: '+e.message);}
+    btn.textContent='Analyse this purchase';btn.disabled=false;
+}
+
+async function showGoalPicker(){
+    try{
+        const data=await(await fetch('/api/goals')).json();
+        let html='';
+        data.goals.forEach(g=>{
+            const pct=Math.min(Math.round(g.saved/g.target*100),100);
+            const remaining=Math.max(g.target-g.saved,0);
+            const coversText=currentImpulse?`This covers ${Math.min(100,Math.round(currentImpulse.amount/remaining*100))}% of remaining`:'';
+            html+=`<div class="goal-pick-card" onclick="allocateToGoal(${g.id})">
+                <div class="goal-pick-top"><strong>${g.name}</strong><span class="goal-pick-pct">${pct}%</span></div>
+                <div class="goal-progress-bar"><div class="goal-progress-fill" style="width:${pct}%"></div></div>
+                <div class="goal-pick-detail">€${g.saved.toFixed(0)} of €${g.target.toFixed(0)}${coversText?' — '+coversText:''}</div>
+            </div>`;
+        });
+        document.getElementById('goal-picker-cards').innerHTML=html;
+        document.getElementById('goal-picker').classList.remove('hidden');
+    }catch(e){alert('Error loading goals');}
+}
+
+async function allocateToGoal(goalId){
+    if(!currentImpulse)return;
+    try{
+        const data=await(await fetch('/api/goals/allocate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({goal_id:goalId,amount:currentImpulse.amount,item:currentImpulse.item})})).json();
+        const goal=data.goals.find(g=>g.id===goalId);
+        const pct=Math.min(Math.round(goal.saved/goal.target*100),100);
+        document.getElementById('goal-picker').classList.add('hidden');
+        document.getElementById('freeze-confirmation').innerHTML=`<div class="alert alert-success"><div class="alert-success-vault"><span class="vault-snap-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect class="padlock-body" x="5" y="11" width="14" height="10" rx="2"/><path class="padlock-shackle" d="M8 11V7a4 4 0 0 1 8 0v4"/><circle cx="12" cy="16" r="1.5" fill="none" stroke="var(--text-muted)" stroke-width="1.5" class="padlock-body"/></svg></span><div><strong>€${currentImpulse.amount.toFixed(2)} locked in the 48-hour vault!</strong><br>Allocated toward <strong>${goal.name}</strong> — now at ${pct}% of your goal. If you still want the ${currentImpulse.item} in 48 hours, the money unlocks.</div></div></div>`;
+        // Trigger snap animation after brief delay
+        setTimeout(()=>{
+            document.querySelectorAll('#freeze-confirmation .padlock-shackle, #freeze-confirmation .padlock-body').forEach(el=>el.classList.add('snapped'));
+        },100);
+        document.getElementById('freeze-confirmation').classList.remove('hidden');
+        // Pulse Score: +5 for locking
+        updatePulseScore(5);
+    }catch(e){alert('Error: '+e.message);}
+}
+
+async function buyAnyway(){
+    document.getElementById('goal-picker').classList.add('hidden');
+    document.getElementById('freeze-confirmation').innerHTML='<div class="alert alert-warning">Purchase recorded. No judgement — but next time, try the 48-hour vault.</div>';
+    document.getElementById('freeze-confirmation').classList.remove('hidden');
+    // Log to backend impulse ledger and sync score from server
+    if(currentImpulse){
+        try{
+            const res = await(await fetch('/api/impulse/succumb',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({item:currentImpulse.item,amount:currentImpulse.amount})})).json();
+            if(res.pulse_score !== undefined){
+                const delta = res.pulse_score - pulseScore;
+                pulseScore = res.pulse_score;
+                updatePulseScoreUI();
+                // Show the delta animation
+                const deltaEl = document.getElementById('pulse-score-delta');
+                const card = document.getElementById('pulse-score-card');
+                if(deltaEl){
+                    deltaEl.textContent = String(delta);
+                    deltaEl.className = 'pulse-score-delta down';
+                }
+                if(card){ card.classList.remove('flash-down'); void card.offsetWidth; card.classList.add('flash-down'); }
+            }
+        }catch(e){
+            // Fallback to client-side decrement if server fails
+            updatePulseScore(-5);
+        }
+    } else {
+        updatePulseScore(-5);
+    }
+}
+
+// ── YOUR GOALS PAGE ──
+async function loadGoalsPage(){
+    try{
+        const data=await(await fetch('/api/goals')).json();
+        renderGoals(data.goals);
+        renderVault(data.vault);
+    }catch(e){}
+}
+
+function renderGoals(goals){
+    let html='';
+    goals.forEach(g=>{
+        const pct=Math.min(Math.round(g.saved/g.target*100),100);
+        const remaining=Math.max(g.target-g.saved,0);
+        const icons={plane:'M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z',shield:'M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z',laptop:'M20 16V4H4v12M2 20h20'};
+        const iconPath=icons[g.icon]||icons.shield;
+        html+=`<div class="goal-card">
+            <div class="goal-header">
+                <div class="goal-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="${iconPath}"/></svg></div>
+                <div class="goal-info"><div class="goal-name">${g.name}</div><div class="goal-target">Target: €${g.target.toLocaleString()}</div></div>
+                <div class="goal-pct-badge">${pct}%</div>
+            </div>
+            <div class="goal-progress-bar-lg"><div class="goal-progress-fill-lg" style="width:${pct}%"></div></div>
+            <div class="goal-footer">
+                <span class="goal-saved">€${g.saved.toLocaleString(undefined,{minimumFractionDigits:2})} saved</span>
+                <span class="goal-remaining">€${remaining.toLocaleString(undefined,{minimumFractionDigits:2})} to go</span>
+            </div>
+        </div>`;
+    });
+    document.getElementById('goals-grid').innerHTML=html;
+}
+
+function renderVault(vault){
+    if(!vault||!vault.length){
+        document.getElementById('vault-items').innerHTML='';
+        document.getElementById('vault-empty').classList.remove('hidden');
+        return;
+    }
+    document.getElementById('vault-empty').classList.add('hidden');
+    let html='';
+    vault.forEach((v,i)=>{
+        const lockTime=new Date(v.timestamp);
+        const unlockTime=new Date(lockTime.getTime()+48*60*60*1000);
+        const now=new Date();
+        const hoursLeft=Math.max(0,Math.round((unlockTime-now)/1000/60/60));
+        const status=hoursLeft>0?`${hoursLeft}h remaining`:'Unlocked — ready to invest';
+        const statusClass=hoursLeft>0?'vault-locked':'vault-unlocked';
+        html+=`<div class="vault-item">
+            <div class="vault-item-left"><strong>${v.item}</strong><span class="vault-amount">€${v.amount.toFixed(2)}</span></div>
+            <div class="vault-item-right"><span class="vault-status ${statusClass}">${status}</span><button class="btn btn-secondary btn-sm" style="margin-left:8px;" onclick="removeVaultItem(${i})">Remove</button></div>
+        </div>`;
+    });
+    document.getElementById('vault-items').innerHTML=html;
+}
+
+// ── REMOVE VAULT ITEM ──
+async function removeVaultItem(index){
+    try{
+        await fetch('/api/vault/remove',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({index})});
+        loadGoalsPage();
+        // Reverse the +5 that was awarded when this item was locked
+        updatePulseScore(-5);
+    }catch(e){alert('Error removing item');}
+}
+
+// ── PROJECTION TOOL (kept inside goals page) ──
+async function loadInvestState(){ loadGoalsPage(); }
+async function clearFrozen(){ await fetch('/api/clear-frozen',{method:'POST'}); }
+
+function selectRisk(el){
+    document.querySelectorAll('.risk-pill').forEach(p=>p.classList.remove('active'));
+    el.classList.add('active');liveProjection();
+}
+
+function liveProjection(){
+    const principal=parseFloat(document.getElementById('invest-amount').value)||150;
+    const years=parseInt(document.getElementById('invest-years').value)||10;
+    const riskEl=document.querySelector('.risk-pill.active');
+    if(!riskEl)return;
+    const risk=riskEl.dataset.risk;
+    const rates={'Conservative (4%)':0.04,'Balanced (7%)':0.07,'Aggressive (12%)':0.12};
+    const allRates={'Conservative (4%)':0.04,'Balanced (7%)':0.07,'Aggressive (12%)':0.12,'Savings (1%)':0.01};
+    const rate=rates[risk]||0.07;
+    const finalValue=principal*Math.pow(1+rate,years);
+    const gain=finalValue-principal;
+    const gainPct=((gain/principal)*100).toFixed(1);
+
+    // Build chart data locally (no API call needed for chart)
+    const labels=Array.from({length:years+1},(_,i)=>'Year '+i);
+    const colors={'Savings (1%)':'#CCCCCC','Conservative (4%)':'#0052FF','Balanced (7%)':'#00A86B','Aggressive (12%)':'#E5484D'};
+    const datasets=Object.entries(allRates).map(([label,r])=>({
+        label:label==='Savings (1%)'?'Savings account (1%)':label,
+        data:Array.from({length:years+1},(_,y)=>Math.round(principal*Math.pow(1+r,y)*100)/100),
+        borderColor:colors[label],
+        borderWidth:(label===risk)?3:(label==='Savings (1%)'?1:1.5),
+        borderDash:(label===risk)?[]:[5,5],
+        pointRadius:0,tension:0.3,fill:false
+    }));
+
+    if(projectionChart)projectionChart.destroy();
+    projectionChart=new Chart(document.getElementById('projection-chart'),{
+        type:'line',data:{labels,datasets},
+        options:{plugins:{legend:{position:'top',labels:{usePointStyle:true,font:{family:'Satoshi',size:11}}}},scales:{y:{ticks:{callback:v=>'€'+v.toLocaleString(),font:{size:10}},grid:{color:'#F0F0F0'}},x:{grid:{display:false},ticks:{maxTicksLimit:8,font:{size:10}}}},interaction:{mode:'index',intersect:false}}
+    });
+
+    // Metrics
+    document.getElementById('projection-metrics').innerHTML=`
+        <div class="metric-card"><div class="metric-label">Initial</div><div class="metric-value">€${principal.toFixed(2)}</div></div>
+        <div class="metric-card"><div class="metric-label">After ${years} yrs</div><div class="metric-value">€${finalValue.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}</div></div>
+        <div class="metric-card"><div class="metric-label">Total Gain</div><div class="metric-value" style="color:var(--success)">€${gain.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}</div><div class="metric-delta delta-up">+${gainPct}%</div></div>`;
+
+    // Debounced ELI5 call (only call LLM after user stops adjusting for 800ms)
+    clearTimeout(eli5Debounce);
+    eli5Debounce=setTimeout(async()=>{
+        try{
+            const data=await(await fetch('/api/eli5',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({principal,years,risk})})).json();
+            document.getElementById('eli5-text').textContent=data.text;
+        }catch(e){}
+    },800);
+}
+
+// ── GLOBAL SEARCH ──
+document.getElementById('global-search').addEventListener('input',function(){
+    const q=this.value.toLowerCase().trim();
+    if(!allTransactions.length)return;
+    if(!q){renderTable(allTransactions);return;}
+    renderTable(allTransactions.filter(t=>t.description.toLowerCase().includes(q)||t.category.toLowerCase().includes(q)));
+    if(!document.getElementById('page-auditor').classList.contains('active')){
+        document.querySelectorAll('.nav-item').forEach(i=>i.classList.remove('active'));
+        document.querySelector('[data-page="auditor"]').classList.add('active');
+        document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+        document.getElementById('page-auditor').classList.add('active');
+    }
+});
+
+// ── INIT: render default projection ──
+liveProjection();
+
+// ── 4. PULSE SCORE SYSTEM ──
+let pulseScore = 85;
+const PULSE_SCORE_CIRCUMFERENCE = 2 * Math.PI * 22; // ~138.23
+
+function updatePulseScoreUI(){
+    const circle = document.getElementById('pulse-score-circle');
+    const valueEl = document.getElementById('pulse-score-value');
+    const deltaEl = document.getElementById('pulse-score-delta');
+    if(!circle || !valueEl) return;
+    const clamped = Math.max(0, Math.min(100, pulseScore));
+    const offset = PULSE_SCORE_CIRCUMFERENCE * (1 - clamped / 100);
+    circle.style.strokeDashoffset = offset;
+    // Color: green if >=80, accent if >=60, warning if >=40, danger otherwise
+    let strokeColor;
+    if(clamped >= 80) strokeColor = 'var(--success)';
+    else if(clamped >= 60) strokeColor = 'var(--accent)';
+    else if(clamped >= 40) strokeColor = 'var(--warning)';
+    else strokeColor = 'var(--danger)';
+    circle.style.stroke = strokeColor;
+    valueEl.textContent = clamped;
+
+    // Sync all mini widgets
+    document.querySelectorAll('.pulse-score-fill-mini').forEach(c => {
+        c.style.strokeDashoffset = offset;
+        c.style.stroke = strokeColor;
+    });
+    document.querySelectorAll('.pulse-score-value-mini').forEach(v => {
+        v.textContent = clamped;
+    });
+}
+
+function updatePulseScore(delta){
+    const prev = pulseScore;
+    pulseScore = Math.max(0, Math.min(100, pulseScore + delta));
+    const valueEl = document.getElementById('pulse-score-value');
+    const deltaEl = document.getElementById('pulse-score-delta');
+    const card = document.getElementById('pulse-score-card');
+    if(!valueEl) return;
+
+    // Animate count
+    const startTime = performance.now();
+    function tick(t){
+        const p = Math.min((t - startTime) / 400, 1);
+        const eased = 1 - Math.pow(1 - p, 3);
+        const current = Math.round(prev + (pulseScore - prev) * eased);
+        valueEl.textContent = current;
+        if(p < 1) requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+
+    // Update ring
+    updatePulseScoreUI();
+
+    // Delta badge
+    if(deltaEl){
+        if(delta > 0){
+            deltaEl.textContent = '+' + delta;
+            deltaEl.className = 'pulse-score-delta up';
+        } else {
+            deltaEl.textContent = String(delta);
+            deltaEl.className = 'pulse-score-delta down';
+        }
+    }
+
+    // Flash the card
+    if(card){
+        card.classList.remove('flash-up','flash-down');
+        void card.offsetWidth; // reflow
+        card.classList.add(delta > 0 ? 'flash-up' : 'flash-down');
+    }
+}
+
+// Init pulse score ring on load
+updatePulseScoreUI();
+
+// ── 5. SMART EMPTY STATE FOR IMPULSE PAGE ──
+let incomeManuallySet = false;
+
+function checkImpulseEmptyState(){
+    const emptyEl = document.getElementById('impulse-empty');
+    const calcEl = document.getElementById('impulse-calculator');
+    if(!emptyEl || !calcEl) return;
+    // Show empty state if no statement loaded AND income not manually set
+    if(!allTransactions.length && !incomeManuallySet){
+        emptyEl.classList.remove('hidden');
+        calcEl.classList.add('hidden');
+    } else {
+        emptyEl.classList.add('hidden');
+        calcEl.classList.remove('hidden');
+    }
+}
+
+function emptyStateGoToAuditor(){
+    document.querySelectorAll('.nav-item').forEach(i=>i.classList.remove('active'));
+    document.querySelector('[data-page="auditor"]').classList.add('active');
+    document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+    document.getElementById('page-auditor').classList.add('active');
+    document.getElementById('breadcrumb').textContent='Statement Auditor';
+}
+
+function emptyStateGoToDashboard(){
+    document.querySelectorAll('.nav-item').forEach(i=>i.classList.remove('active'));
+    document.querySelector('[data-page="dashboard"]').classList.add('active');
+    document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+    document.getElementById('page-dashboard').classList.add('active');
+    document.getElementById('breadcrumb').textContent='Dashboard';
+}
+
+function emptyStateEnterManually(){
+    incomeManuallySet = true;
+    document.getElementById('impulse-empty').classList.add('hidden');
+    document.getElementById('impulse-calculator').classList.remove('hidden');
+    document.getElementById('income-edit').classList.remove('hidden');
+    document.getElementById('monthly-income').focus();
+}
+
+// Patch loadImpulseState to also check empty state
+const _origLoadImpulseState = loadImpulseState;
+loadImpulseState = async function(){
+    await _origLoadImpulseState();
+    checkImpulseEmptyState();
+};
+
+// ── 3. PENDING PROGRESS BAR (patched renderGoals) ──
+// Store vault data globally for rendering pending state
+let lastVaultData = [];
+
+const _origRenderGoals = renderGoals;
+renderGoals = function(goals){
+    let html='';
+    goals.forEach(g=>{
+        // Calculate how much is from vault (pending/locked) for this goal
+        let pendingAmount = 0;
+        if(lastVaultData && lastVaultData.length){
+            lastVaultData.forEach(v=>{
+                if(v.goal_id === g.id){
+                    const lockTime = new Date(v.timestamp);
+                    const unlockTime = new Date(lockTime.getTime() + 48*60*60*1000);
+                    if(new Date() < unlockTime) pendingAmount += v.amount;
+                }
+            });
+        }
+        const confirmedSaved = Math.max(0, g.saved - pendingAmount);
+        const confirmedPct = Math.min(Math.round(confirmedSaved / g.target * 100), 100);
+        const totalPct = Math.min(Math.round(g.saved / g.target * 100), 100);
+        const remaining = Math.max(g.target - g.saved, 0);
+        const icons={plane:'M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z',shield:'M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z',laptop:'M20 16V4H4v12M2 20h20'};
+        const iconPath=icons[g.icon]||icons.shield;
+        const pendingBar = pendingAmount > 0 ? `<div class="goal-progress-pending-lg" style="width:${totalPct}%"></div>` : '';
+        const pendingLabel = pendingAmount > 0 ? ` <span style="font-size:0.68rem;color:var(--success);font-weight:600;margin-left:4px;">(+€${pendingAmount.toFixed(0)} locked)</span>` : '';
+        html+=`<div class="goal-card">
+            <div class="goal-header">
+                <div class="goal-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="${iconPath}"/></svg></div>
+                <div class="goal-info"><div class="goal-name">${g.name}</div><div class="goal-target">Target: €${g.target.toLocaleString()}</div></div>
+                <div class="goal-pct-badge">${totalPct}%</div>
+            </div>
+            <div class="goal-progress-bar-lg">${pendingBar}<div class="goal-progress-fill-lg" style="width:${confirmedPct}%"></div></div>
+            <div class="goal-footer">
+                <span class="goal-saved">€${g.saved.toLocaleString(undefined,{minimumFractionDigits:2})} saved${pendingLabel}</span>
+                <span class="goal-remaining">€${remaining.toLocaleString(undefined,{minimumFractionDigits:2})} to go</span>
+            </div>
+        </div>`;
+    });
+    document.getElementById('goals-grid').innerHTML=html;
+};
+
+// Patch loadGoalsPage to store vault data
+const _origLoadGoalsPage = loadGoalsPage;
+loadGoalsPage = async function(){
+    try{
+        const data=await(await fetch('/api/goals')).json();
+        lastVaultData = data.vault || [];
+        renderGoals(data.goals);
+        renderVault(data.vault);
+    }catch(e){}
+};
+
+// Also patch showGoalPicker for pending preview in picker cards
+const _origShowGoalPicker = showGoalPicker;
+showGoalPicker = async function(){
+    try{
+        const data=await(await fetch('/api/goals')).json();
+        let html='';
+        data.goals.forEach(g=>{
+            const pct=Math.min(Math.round(g.saved/g.target*100),100);
+            const remaining=Math.max(g.target-g.saved,0);
+            const previewPct = currentImpulse ? Math.min(Math.round((g.saved+currentImpulse.amount)/g.target*100),100) : pct;
+            const coversText=currentImpulse?`This covers ${Math.min(100,Math.round(currentImpulse.amount/remaining*100))}% of remaining`:'';
+            const pendingPreview = currentImpulse ? `<div class="goal-progress-pending" style="width:${previewPct}%"></div>` : '';
+            html+=`<div class="goal-pick-card" onclick="allocateToGoal(${g.id})">
+                <div class="goal-pick-top"><strong>${g.name}</strong><span class="goal-pick-pct">${pct}% → ${previewPct}%</span></div>
+                <div class="goal-progress-bar">${pendingPreview}<div class="goal-progress-fill" style="width:${pct}%"></div></div>
+                <div class="goal-pick-detail">€${g.saved.toFixed(0)} of €${g.target.toFixed(0)}${coversText?' — '+coversText:''}</div>
+            </div>`;
+        });
+        document.getElementById('goal-picker-cards').innerHTML=html;
+        document.getElementById('goal-picker').classList.remove('hidden');
+    }catch(e){alert('Error loading goals');}
+};
+</script>
+</body>
+</html>
